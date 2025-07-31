@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "../dist-types/backstage-plugin-mcp-frontend",
+    "rootDir": "."
+  },
+  "include": ["src"]
+}

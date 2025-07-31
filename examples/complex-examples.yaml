@@ -1,0 +1,350 @@
+# Complex MCP Server Examples
+# These examples demonstrate enterprise-grade MCP configurations with advanced features
+
+---
+# Enterprise AI/ML Pipeline MCP (SSE with ML orchestration)
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: ml-pipeline-orchestrator-mcp
+  description: "Enterprise ML pipeline orchestration with model deployment and monitoring"
+  annotations:
+    backstage.io/managed-by-location: "url:https://github.com/company/ml-platform/blob/main/catalog-info.yaml"
+  tags:
+    - machine-learning
+    - ai
+    - orchestration
+    - model-deployment
+    - monitoring
+spec:
+  transport: sse                         # Server-sent events for real-time ML job updates
+  runtime: python
+  type: workflow-automation
+  lifecycle: production
+  owner: ml-platform-team
+  system: ai-ml-platform
+  
+  # Comprehensive ML capabilities
+  capabilities:
+    tools:
+      - name: "deploy_model"
+        description: "Deploy ML models to production with A/B testing support"
+      - name: "train_pipeline"
+        description: "Execute complete ML training pipelines with hyperparameter tuning"
+      - name: "monitor_drift"
+        description: "Monitor model performance and data drift in production"
+      - name: "rollback_deployment"
+        description: "Rollback model deployments with traffic shifting"
+      - name: "optimize_inference"
+        description: "Optimize model inference performance and resource usage"
+    resources:
+      - name: "model_registry"
+        description: "Central registry of all ML models with versioning and metadata"
+      - name: "experiment_tracking"
+        description: "MLflow experiment tracking and artifact storage"
+      - name: "feature_store"
+        description: "Feature store with feature engineering and serving"
+      - name: "training_datasets"
+        description: "Managed training datasets with versioning and lineage"
+      - name: "inference_metrics"
+        description: "Real-time inference metrics and performance dashboards"
+    prompts:
+      - name: "model_card_generator"
+        description: "Generate comprehensive model cards with bias analysis"
+      - name: "deployment_strategy"
+        description: "Recommend deployment strategies based on model characteristics"
+      - name: "performance_analysis"
+        description: "Analyze model performance and suggest improvements"
+  
+  # Advanced SSE configuration with load balancing
+  configuration:
+    url: "https://ml-mcp.company.com/sse/v2"
+    timeout: 1800000                     # 30 minutes for long-running training jobs
+    maxRetries: 5
+    backoffStrategy: "exponential"
+    loadBalancer:
+      strategy: "round-robin"
+      healthCheck: "/health"
+    env:
+      # Model registry configuration
+      - name: "MLFLOW_TRACKING_URI"
+        value: "https://mlflow.company.com"
+      - name: "MLFLOW_S3_ENDPOINT_URL"
+        value: "https://s3.company.com"
+      # Kubernetes deployment
+      - name: "KUBECONFIG_PATH"
+        valueFrom: "secret"
+      - name: "ML_NAMESPACE"
+        value: "ml-production"
+      # Cloud provider credentials
+      - name: "AWS_ROLE_ARN"
+        valueFrom: "secret"
+      - name: "GCP_SERVICE_ACCOUNT_KEY"
+        valueFrom: "secret"
+      # Feature store configuration
+      - name: "FEAST_REGISTRY_PATH"
+        value: "s3://ml-platform/feast/registry.pb"
+  
+  # Complex authentication with multiple providers
+  authentication:
+    type: oauth2
+    provider: "company-sso"
+    config:
+      scopes: ["ml-platform", "model-deploy", "experiment-read"]
+      audience: "https://ml-platform.company.com"
+      tokenEndpoint: "https://auth.company.com/oauth2/token"
+  
+  # Extensive dependency graph
+  dependsOn:
+    - "api:kubernetes-api"
+    - "api:mlflow-api"
+    - "resource:s3-storage"
+    - "resource:gpu-cluster"
+    - "component:feature-store"
+    - "component:model-registry"
+  consumedBy:
+    - "component:data-science-workbench"
+    - "component:ml-monitoring-dashboard"
+    - "component:automated-retraining"
+    - "component:model-serving-gateway"
+
+---
+# Multi-Cloud Infrastructure Management MCP (HTTP with complex auth)
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: multi-cloud-infrastructure-mcp
+  description: "Enterprise multi-cloud infrastructure management across AWS, GCP, and Azure"
+  annotations:
+    backstage.io/managed-by-location: "url:https://github.com/company/infrastructure/blob/main/mcp-servers.yaml"
+    cost-center: "infrastructure"
+    compliance: "soc2,iso27001"
+  tags:
+    - infrastructure
+    - cloud
+    - aws
+    - gcp
+    - azure
+    - terraform
+    - cost-optimization
+spec:
+  transport: http
+  runtime: go                            # Go for performance and cloud SDK support
+  type: api-integration
+  lifecycle: production
+  owner: cloud-platform-team
+  system: infrastructure-platform
+  
+  capabilities:
+    tools:
+      - name: "provision_infrastructure"
+        description: "Provision infrastructure using Terraform across multiple clouds"
+      - name: "optimize_costs"
+        description: "Analyze and optimize cloud spending across all providers"
+      - name: "manage_compliance"
+        description: "Ensure infrastructure compliance with security policies"
+      - name: "disaster_recovery"
+        description: "Execute disaster recovery procedures across cloud regions"
+      - name: "capacity_planning"
+        description: "Analyze usage patterns and plan capacity scaling"
+      - name: "security_scanning"
+        description: "Scan infrastructure for security vulnerabilities and misconfigurations"
+    resources:
+      - name: "cloud_inventory"
+        description: "Complete inventory of resources across all cloud providers"
+      - name: "cost_analytics"
+        description: "Detailed cost breakdown and trending analysis"
+      - name: "compliance_reports"
+        description: "Security and compliance audit reports"
+      - name: "terraform_state"
+        description: "Terraform state files and infrastructure as code"
+      - name: "monitoring_dashboards"
+        description: "Infrastructure monitoring and alerting dashboards"
+    prompts:
+      - name: "architecture_review"
+        description: "Review infrastructure architecture for best practices"
+      - name: "cost_optimization_plan"
+        description: "Generate cost optimization recommendations"
+      - name: "security_hardening"
+        description: "Provide security hardening guidelines"
+  
+  # High-availability HTTP configuration
+  configuration:
+    url: "https://infrastructure-mcp.company.com/api/v3"
+    timeout: 600000                      # 10 minutes for infrastructure operations
+    maxRetries: 3
+    circuitBreaker:
+      enabled: true
+      threshold: 5
+      timeout: 30000
+    rateLimit:
+      requests: 100
+      window: "1m"
+    env:
+      # AWS configuration
+      - name: "AWS_REGION"
+        value: "us-east-1"
+      - name: "AWS_ROLE_ARN"
+        valueFrom: "secret"
+      # GCP configuration
+      - name: "GOOGLE_CLOUD_PROJECT"
+        value: "company-production"
+      - name: "GOOGLE_APPLICATION_CREDENTIALS"
+        valueFrom: "secret"
+      # Azure configuration
+      - name: "AZURE_TENANT_ID"
+        valueFrom: "secret"
+      - name: "AZURE_CLIENT_ID"
+        valueFrom: "secret"
+      - name: "AZURE_CLIENT_SECRET"
+        valueFrom: "secret"
+      # Terraform configuration
+      - name: "TF_STATE_BUCKET"
+        value: "company-terraform-state"
+      - name: "TF_LOCK_TABLE"
+        value: "terraform-locks"
+  
+  # Multi-provider authentication strategy
+  authentication:
+    type: oauth2
+    provider: "company-sso"
+    config:
+      scopes: ["infrastructure-admin", "cost-read", "compliance-read"]
+      audience: "https://infrastructure.company.com"
+      # Federated authentication with cloud providers
+      federatedAuth:
+        aws:
+          roleArn: "arn:aws:iam::123456789012:role/InfraMCPRole"
+        gcp:
+          serviceAccount: "infra-mcp@company-prod.iam.gserviceaccount.com"
+        azure:
+          principalId: "12345678-1234-1234-1234-123456789012"
+  
+  # Complex dependency relationships
+  dependsOn:
+    - "api:aws-api"
+    - "api:gcp-api"
+    - "api:azure-api"
+    - "resource:terraform-state-backend"
+    - "component:secrets-manager"
+    - "component:monitoring-system"
+  consumedBy:
+    - "component:developer-portal"
+    - "component:cost-management-dashboard"
+    - "component:security-compliance-scanner"
+    - "component:disaster-recovery-orchestrator"
+
+---
+# Advanced Document Processing MCP (stdio with AI integration)
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: document-ai-processor-mcp
+  description: "Advanced document processing with AI/ML for OCR, classification, and extraction"
+  annotations:
+    backstage.io/managed-by-location: "url:https://github.com/company/document-ai/blob/main/backstage-entity.yaml"
+    data-classification: "confidential"
+    retention-policy: "7-years"
+  tags:
+    - document-processing
+    - ai
+    - ocr
+    - classification
+    - data-extraction
+    - compliance
+spec:
+  transport: stdio
+  runtime: python
+  type: data-connector
+  lifecycle: production
+  owner: ai-automation-team
+  system: document-management-platform
+  
+  capabilities:
+    tools:
+      - name: "extract_text_ocr"
+        description: "Extract text from images and PDFs using advanced OCR"
+      - name: "classify_documents"
+        description: "Classify documents using ML models (invoices, contracts, etc.)"
+      - name: "extract_entities"
+        description: "Extract structured data (dates, amounts, names) from documents"
+      - name: "validate_compliance"
+        description: "Validate documents against compliance rules and regulations"
+      - name: "generate_summary"
+        description: "Generate intelligent summaries of long documents"
+      - name: "detect_anomalies"
+        description: "Detect potential fraud or anomalies in documents"
+    resources:
+      - name: "document_templates"
+        description: "Library of document templates and schemas"
+      - name: "extraction_models"
+        description: "Trained ML models for entity extraction"
+      - name: "compliance_rules"
+        description: "Business rules and compliance validation logic"
+      - name: "processing_history"
+        description: "Audit trail of all document processing activities"
+      - name: "confidence_metrics"
+        description: "Accuracy and confidence metrics for AI predictions"
+    prompts:
+      - name: "document_analyzer"
+        description: "Analyze document structure and recommend processing approach"
+      - name: "compliance_checker"
+        description: "Check document compliance and suggest corrections"
+      - name: "quality_assessor"
+        description: "Assess document quality and processing accuracy"
+  
+  # Resource-intensive stdio configuration
+  configuration:
+    command: "python"
+    args: ["-m", "document_ai_mcp", "--gpu", "--high-memory"]
+    timeout: 300000                      # 5 minutes for complex document processing
+    resources:
+      cpu: "4"                          # 4 CPU cores
+      memory: "8Gi"                     # 8GB RAM
+      gpu: "1"                          # 1 GPU for AI processing
+    env:
+      # AI/ML model configuration
+      - name: "HUGGINGFACE_HUB_CACHE"
+        value: "/opt/models/huggingface"
+      - name: "TRANSFORMERS_CACHE"
+        value: "/opt/models/transformers"
+      - name: "TORCH_HOME"
+        value: "/opt/models/pytorch"
+      # Cloud AI services
+      - name: "GOOGLE_CLOUD_PROJECT"
+        value: "company-document-ai"
+      - name: "GOOGLE_APPLICATION_CREDENTIALS"
+        valueFrom: "secret"
+      - name: "AZURE_COGNITIVE_SERVICES_KEY"
+        valueFrom: "secret"
+      # Storage configuration
+      - name: "S3_BUCKET_NAME"
+        value: "company-documents-processed"
+      - name: "S3_REGION"
+        value: "us-east-1"
+      # Database for metadata
+      - name: "POSTGRES_CONNECTION_STRING"
+        valueFrom: "secret"
+  
+  # Service account authentication for AI services
+  authentication:
+    type: oauth2
+    provider: "google-cloud"
+    config:
+      scopes: ["https://www.googleapis.com/auth/cloud-platform"]
+      serviceAccountPath: "/opt/secrets/gcp-service-account.json"
+  
+  # Comprehensive system integration
+  dependsOn:
+    - "api:google-document-ai"
+    - "api:azure-cognitive-services"
+    - "resource:gpu-cluster"
+    - "resource:s3-storage"
+    - "resource:postgres-database"
+    - "component:model-serving-platform"
+  consumedBy:
+    - "component:document-management-system"
+    - "component:invoice-processing-workflow"
+    - "component:contract-analysis-tool"
+    - "component:compliance-automation"
+    - "component:fraud-detection-system"

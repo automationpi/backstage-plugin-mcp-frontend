@@ -1,0 +1,97 @@
+# Simple MCP Server Examples
+# These examples show basic MCP configurations suitable for getting started
+
+---
+# Basic File Operations MCP (stdio transport)
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: simple-file-mcp
+  description: "Basic file operations - read, write, and list files"
+  tags:
+    - file-operations
+    - utilities
+spec:
+  transport: stdio                    # Local process communication
+  runtime: node                      # Node.js runtime
+  type: file-processor               # Server handles file operations
+  lifecycle: production              # Stable for production use
+  owner: platform-team
+  
+  # Simple capabilities - string arrays for basic tools
+  capabilities:
+    tools: ["read_file", "write_file", "list_files"]
+    resources: ["local_filesystem"]
+  
+  # Basic stdio configuration
+  configuration:
+    command: "npx"                   # Use npx to run package
+    args: ["-y", "@my-org/file-mcp"] # Install and run latest version
+    timeout: 30000                   # 30 second timeout
+
+---
+# Basic Weather API MCP (HTTP transport)
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: weather-api-mcp
+  description: "Simple weather data fetcher using HTTP API"
+  tags:
+    - weather
+    - api
+spec:
+  transport: http                    # Remote HTTP transport
+  runtime: python                   # Python runtime
+  type: api-integration            # Integrates with external APIs
+  lifecycle: experimental          # Still testing/developing
+  owner: data-team
+  
+  # Basic tools and resources
+  capabilities:
+    tools: ["get_weather", "get_forecast"]
+    resources: ["weather_data"]
+  
+  # HTTP configuration
+  configuration:
+    url: "https://weather-mcp.example.com/api"
+    timeout: 45000                   # 45 second timeout for HTTP
+  
+  # Basic API key authentication
+  authentication:
+    type: api-key
+    config:
+      header: "X-API-Key"
+
+---
+# Basic Database Query MCP (stdio transport)
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: postgres-query-mcp
+  description: "Simple PostgreSQL query interface"
+  tags:
+    - database
+    - postgres
+    - queries
+spec:
+  transport: stdio
+  runtime: python
+  type: data-connector             # Connects to data sources
+  lifecycle: production
+  owner: data-platform-team
+  
+  capabilities:
+    tools: ["execute_query", "get_schema"]
+    resources: ["database_tables", "query_results"]
+  
+  configuration:
+    command: "python"
+    args: ["-m", "postgres_mcp_server"]
+    env:
+      - name: "DB_HOST"             # Environment variables for connection
+        value: "localhost"
+      - name: "DB_NAME"
+        value: "production_db"
+      - name: "DB_PASSWORD"         # Sensitive data marked as secret
+        valueFrom: "secret"
+    timeout: 60000                  # Longer timeout for database operations

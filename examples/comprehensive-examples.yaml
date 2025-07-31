@@ -1,0 +1,182 @@
+---
+# Weather Data MCP Server - stdio transport example
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: weather-mcp-server
+  description: "Weather data MCP server providing real-time weather information and forecasting tools"
+  annotations:
+    mcp.backstage.io/registry-url: "https://pulsemcp.com/servers/weather"
+    mcp.backstage.io/version: "1.2.0"
+spec:
+  transport: stdio
+  runtime: node
+  type: data-connector
+  lifecycle: production
+  owner: platform-team
+  system: ai-infrastructure
+  repository: "https://github.com/org/weather-mcp-server"
+  registryEntry: "https://pulsemcp.com/servers/weather"
+  version: "1.2.0"
+  capabilities:
+    tools: ["get_current_weather", "get_forecast", "get_weather_alerts", "get_historical_weather"]
+    resources: ["weather_data", "forecast_data", "alert_data"]
+    prompts: ["weather_summary", "forecast_analysis"]
+  configuration:
+    command: "npx"
+    args: ["-y", "@weather/mcp-server"]
+    env:
+      - name: "WEATHER_API_KEY"
+        valueFrom: "secret"
+      - name: "WEATHER_API_URL"
+        value: "https://api.weather.com/v1"
+    timeout: 30000
+  authentication:
+    type: api-key
+    config:
+      header: "X-API-Key"
+  dependsOn: ["weather-api", "location-service"]
+
+---
+# Database Query MCP Server - SSE transport example
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: postgres-mcp-server
+  description: "PostgreSQL database MCP server for executing queries and managing database operations"
+spec:
+  transport: sse
+  runtime: python
+  type: data-connector
+  lifecycle: production
+  owner: data-team
+  system: data-infrastructure
+  repository: "https://github.com/org/postgres-mcp-server"
+  version: "2.1.0"
+  capabilities:
+    tools: ["execute_query", "describe_table", "get_schema", "backup_table"]
+    resources: ["database_schema", "table_metadata", "query_results"]
+    prompts: ["query_builder", "schema_analyzer"]
+  configuration:
+    url: "https://mcp-postgres.company.com/sse"
+    timeout: 60000
+    env:
+      - name: "DATABASE_URL"
+        valueFrom: "secret"
+      - name: "MAX_CONNECTIONS"
+        value: "10"
+  authentication:
+    type: oauth2
+    provider: "company-sso"
+    config:
+      scopes: ["database.read", "database.write"]
+  dependsOn: ["postgres-database", "company-sso"]
+  consumedBy: ["data-analyst-tool", "report-generator"]
+
+---
+# File Processing MCP Server - WebSocket transport example
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: file-processor-mcp
+  description: "File processing MCP server for document analysis, conversion, and metadata extraction"
+spec:
+  transport: websocket
+  runtime: go
+  type: file-processor
+  lifecycle: experimental
+  owner: ml-team
+  system: document-processing
+  repository: "https://github.com/org/file-processor-mcp"
+  version: "0.8.0"
+  capabilities:
+    tools: ["extract_text", "convert_pdf", "analyze_image", "extract_metadata"]
+    resources: ["supported_formats", "processing_stats"]
+    prompts: ["document_summary", "content_analysis"]
+  configuration:
+    url: "wss://file-processor.company.com/ws"
+    timeout: 120000
+    env:
+      - name: "TEMP_DIR"
+        value: "/tmp/mcp-files"
+      - name: "MAX_FILE_SIZE"
+        value: "100MB"
+  authentication:
+    type: bearer
+    config:
+      tokenUrl: "https://auth.company.com/token"
+  dependsOn: ["file-storage", "ml-models"]
+
+---
+# GitHub Integration MCP Server - HTTP transport example
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: github-mcp-server
+  description: "GitHub integration MCP server for repository management and code analysis"
+spec:
+  transport: http
+  runtime: csharp
+  type: api-integration
+  lifecycle: production
+  owner: developer-tools-team
+  system: developer-experience
+  repository: "https://github.com/org/github-mcp-server"
+  registryEntry: "https://pulsemcp.com/servers/github"
+  version: "3.0.1"
+  capabilities:
+    tools: ["create_pr", "get_repo_info", "analyze_code", "create_issue", "get_commits"]
+    resources: ["repository_data", "pr_templates", "code_metrics"]
+    prompts: ["pr_description", "issue_template", "code_review"]
+  configuration:
+    url: "https://github-mcp.company.com/api"
+    timeout: 45000
+    env:
+      - name: "GITHUB_TOKEN"
+        valueFrom: "secret"
+      - name: "GITHUB_APP_ID"
+        valueFrom: "secret"
+  authentication:
+    type: oauth2
+    provider: "github"
+    config:
+      scopes: ["repo", "read:user", "write:repo_hook"]
+  dependsOn: ["github-app", "code-analysis-service"]
+  consumedBy: ["backstage-scaffolder", "code-review-bot"]
+
+---
+# Workflow Automation MCP Server - stdio transport example
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: workflow-automation-mcp
+  description: "Workflow automation MCP server for managing deployment pipelines and CI/CD operations"
+spec:
+  transport: stdio
+  runtime: rust
+  type: workflow-automation
+  lifecycle: production
+  owner: devops-team
+  system: ci-cd-platform
+  repository: "https://github.com/org/workflow-mcp-server"
+  version: "1.5.2"
+  capabilities:
+    tools: ["trigger_deployment", "get_pipeline_status", "create_release", "rollback_deployment"]
+    resources: ["pipeline_configs", "deployment_history", "environment_status"]
+    prompts: ["deployment_plan", "rollback_strategy"]
+  configuration:
+    command: "workflow-mcp"
+    args: ["--config", "/etc/mcp/workflow.yaml"]
+    env:
+      - name: "KUBE_CONFIG"
+        valueFrom: "secret"
+      - name: "DOCKER_REGISTRY"
+        value: "registry.company.com"
+    timeout: 180000
+  authentication:
+    type: api-key
+    config:
+      header: "Authorization"
+      prefix: "Bearer"
+  dependsOn: ["kubernetes-cluster", "docker-registry", "monitoring-system"]
+  consumedBy: ["backstage-actions", "deployment-dashboard"]

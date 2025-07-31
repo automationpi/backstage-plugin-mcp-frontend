@@ -1,0 +1,1 @@
+{"version":3,"file":"routes.esm.js","sources":["../src/routes.ts"],"sourcesContent":["import { createRouteRef } from '@backstage/core-plugin-api';\n\nexport const rootRouteRef = createRouteRef({\n  id: 'mcp',\n});"],"names":[],"mappings":";;AAEO,MAAM,eAAe,cAAA,CAAe;AAAA,EACzC,EAAA,EAAI;AACN,CAAC;;;;"}

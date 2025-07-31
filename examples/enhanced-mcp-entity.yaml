@@ -1,0 +1,78 @@
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: weather-mcp-server
+  description: "Comprehensive weather data and forecasting MCP server with real-time conditions, forecasts, and alerts"
+  annotations:
+    backstage.io/source-location: url:https://github.com/weather-org/mcp-weather-server
+  tags:
+    - weather
+    - api
+    - forecasting
+    - alerts
+  links:
+    - url: https://weather-mcp.company.com/docs
+      title: API Documentation
+      icon: docs
+    - url: https://weather-mcp.company.com/status
+      title: Service Status
+      icon: monitoring
+spec:
+  transport: stdio
+  runtime: node
+  type: api-integration
+  lifecycle: production
+  owner: weather-team
+  system: weather-platform
+  
+  capabilities:
+    tools:
+      - name: get_current_weather
+        description: "Get real-time weather conditions for any location worldwide"
+      - name: get_forecast
+        description: "Retrieve detailed 7-day weather forecast with hourly breakdowns"
+      - name: get_weather_alerts
+        description: "Fetch active severe weather warnings and advisories"
+      - name: get_historical_weather
+        description: "Access historical weather data for trend analysis"
+    
+    resources:
+      - name: weather_data
+        description: "Real-time weather conditions including temperature, humidity, wind speed"
+      - name: forecast_data
+        description: "Extended forecast data with precipitation probability and UV index"
+      - name: alert_data
+        description: "Emergency weather alerts and warnings from national weather services"
+    
+    prompts:
+      - name: weather_summary
+        description: "Generate a human-readable weather summary for any location"
+      - name: forecast_analysis
+        description: "Analyze 7-day forecast trends and provide insights"
+
+  configuration:
+    command: "npx"
+    args: ["-y", "@weather-org/mcp-server"]
+    env:
+      - name: "WEATHER_API_KEY"
+        valueFrom: "secret"
+      - name: "WEATHER_API_URL"
+        value: "https://api.weather.com/v1"
+      - name: "CACHE_TTL"
+        value: "300"
+    timeout: 30000
+
+  authentication:
+    type: api-key
+    provider: "weather-api"
+    config:
+      header: "X-API-Key"
+      scopes: ["weather:read", "alerts:read"]
+
+  # Relationships
+  dependsOn: 
+    - "api:weather-api"
+    - "component:redis-cache"
+  consumedBy:
+    - "component:dashboard-app"
+    - "component:mobile-app"

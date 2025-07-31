@@ -1,0 +1,555 @@
+# Complete Backstage Catalog Setup with MCP Integration
+# This file demonstrates a full organizational setup including systems, components, users, groups, and MCP entities
+# Import this file to see how MCP entities integrate with your broader Backstage catalog
+
+---
+# User Definitions
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: john.doe
+  description: Senior Platform Engineer
+spec:
+  profile:
+    displayName: John Doe
+    email: john.doe@company.com
+    picture: https://avatars.githubusercontent.com/u/123456?v=4
+  memberOf: [platform-team, infrastructure-team]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: jane.smith
+  description: Data Science Lead
+spec:
+  profile:
+    displayName: Jane Smith
+    email: jane.smith@company.com
+    picture: https://avatars.githubusercontent.com/u/789012?v=4
+  memberOf: [data-team, ml-platform-team]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: mike.wilson
+  description: Frontend Developer
+spec:
+  profile:
+    displayName: Mike Wilson
+    email: mike.wilson@company.com
+    picture: https://avatars.githubusercontent.com/u/345678?v=4
+  memberOf: [frontend-team, developers]
+
+---
+# Group Definitions
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: platform-team
+  description: Platform Engineering Team - manages infrastructure and developer tools
+spec:
+  type: team
+  profile:
+    displayName: Platform Engineering
+    email: platform-team@company.com
+    picture: https://company.com/images/platform-team.png
+  parent: engineering
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: data-team
+  description: Data Engineering Team - manages data pipelines and analytics
+spec:
+  type: team
+  profile:
+    displayName: Data Engineering
+    email: data-team@company.com
+  parent: engineering
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: ml-platform-team
+  description: ML Platform Team - manages machine learning infrastructure
+spec:
+  type: team
+  profile:
+    displayName: ML Platform
+    email: ml-platform@company.com
+  parent: engineering
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: frontend-team
+  description: Frontend Development Team
+spec:
+  type: team
+  profile:
+    displayName: Frontend Team
+    email: frontend-team@company.com
+  parent: engineering
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: engineering
+  description: Engineering Division
+spec:
+  type: organization
+  profile:
+    displayName: Engineering
+    email: engineering@company.com
+  children: [platform-team, data-team, ml-platform-team, frontend-team]
+
+---
+# System Definitions
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: developer-platform
+  description: Internal developer platform providing tools and services for engineering teams
+  tags:
+    - platform
+    - infrastructure
+spec:
+  owner: platform-team
+  domain: infrastructure
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: data-platform
+  description: Data processing and analytics platform
+  tags:
+    - data
+    - analytics
+    - etl
+spec:
+  owner: data-team
+  domain: data
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: ml-platform
+  description: Machine learning platform for model training and deployment
+  tags:
+    - machine-learning
+    - ai
+    - models
+spec:
+  owner: ml-platform-team
+  domain: ai
+
+---
+# API Definitions
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: github-api
+  description: GitHub REST API for repository and issue management
+  tags:
+    - github
+    - version-control
+spec:
+  type: rest
+  lifecycle: production
+  owner: platform-team
+  system: developer-platform
+  definition: |
+    openapi: 3.0.0
+    info:
+      title: GitHub API
+      version: v3
+    servers:
+      - url: https://api.github.com
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: weather-api
+  description: External weather data API
+  tags:
+    - weather
+    - external
+spec:
+  type: rest
+  lifecycle: production
+  owner: data-team
+  system: data-platform
+
+---
+# Resource Definitions
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: postgres-cluster
+  description: PostgreSQL database cluster for application data
+  tags:
+    - database
+    - postgres
+spec:
+  type: database
+  owner: platform-team
+  system: developer-platform
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: gpu-cluster
+  description: GPU cluster for machine learning workloads
+  tags:
+    - gpu
+    - machine-learning
+    - compute
+spec:
+  type: compute
+  owner: ml-platform-team
+  system: ml-platform
+
+---
+# Component Definitions
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: developer-portal
+  description: Internal developer portal built on Backstage
+  tags:
+    - backstage
+    - portal
+    - internal-tools
+  annotations:
+    github.com/project-slug: company/developer-portal
+spec:
+  type: website
+  lifecycle: production
+  owner: platform-team
+  system: developer-platform
+  consumesApis: [github-api]
+  dependsOn: [resource:postgres-cluster]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: data-pipeline-orchestrator
+  description: Orchestrates data processing pipelines
+  tags:
+    - data
+    - pipeline
+    - orchestration
+spec:
+  type: service
+  lifecycle: production
+  owner: data-team
+  system: data-platform
+  dependsOn: [resource:postgres-cluster]
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ml-model-serving
+  description: Serves ML models in production
+  tags:
+    - machine-learning
+    - serving
+    - api
+spec:
+  type: service
+  lifecycle: production
+  owner: ml-platform-team
+  system: ml-platform
+  dependsOn: [resource:gpu-cluster]
+
+---
+# MCP Server Definitions - Integrated with the ecosystem above
+
+# File Operations MCP - Used by developer portal for file management
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: file-operations-mcp
+  description: "Essential file operations MCP server for developer workflows"
+  tags:
+    - file-operations
+    - developer-tools
+    - utilities
+spec:
+  transport: stdio
+  runtime: node
+  type: file-processor
+  lifecycle: production
+  owner: platform-team                   # Owned by platform team
+  system: developer-platform             # Part of developer platform system
+  
+  capabilities:
+    tools:
+      - name: "read_file"
+        description: "Read file contents with encoding detection"
+      - name: "write_file"
+        description: "Write files with backup and validation"
+      - name: "list_files"
+        description: "List directory contents with filtering"
+      - name: "search_files"
+        description: "Search file contents using regex patterns"
+    resources:
+      - name: "local_filesystem"
+        description: "Access to local file system with permission controls"
+      - name: "project_templates"
+        description: "Collection of project templates and scaffolds"
+  
+  configuration:
+    command: "npx"
+    args: ["-y", "@company/file-operations-mcp"]
+    timeout: 30000
+    env:
+      - name: "WORKSPACE_ROOT"
+        value: "/workspace"
+      - name: "TEMPLATE_DIR"
+        value: "/opt/templates"
+  
+  # Integration with existing ecosystem
+  consumedBy: 
+    - "component:developer-portal"       # Used by the developer portal
+
+---
+# GitHub Integration MCP - Connects with GitHub API
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: github-integration-mcp
+  description: "GitHub integration for repository management and automation"
+  tags:
+    - github
+    - version-control
+    - automation
+spec:
+  transport: http
+  runtime: node
+  type: api-integration
+  lifecycle: production
+  owner: platform-team
+  system: developer-platform
+  
+  capabilities:
+    tools:
+      - name: "create_repository"
+        description: "Create repositories from templates with team permissions"
+      - name: "manage_issues"
+        description: "Create, assign, and close GitHub issues"
+      - name: "sync_branches"
+        description: "Synchronize branches across repository forks"
+      - name: "setup_webhooks"
+        description: "Configure repository webhooks for CI/CD"
+    resources:
+      - name: "repository_metadata"
+        description: "Repository statistics, contributors, and activity"
+      - name: "organization_settings"
+        description: "Organization-level GitHub configuration"
+    prompts:
+      - name: "pr_description_generator"
+        description: "Generate comprehensive pull request descriptions"
+      - name: "issue_template_creator"
+        description: "Create issue templates for different project types"
+  
+  configuration:
+    url: "https://github-mcp.company.com/api/v1"
+    timeout: 60000
+    env:
+      - name: "GITHUB_APP_ID"
+        value: "123456"
+      - name: "GITHUB_PRIVATE_KEY"
+        valueFrom: "secret"
+  
+  authentication:
+    type: oauth2
+    provider: "github"
+    config:
+      scopes: ["repo", "admin:org", "admin:repo_hook"]
+  
+  # Depends on GitHub API, consumed by developer portal
+  dependsOn: ["api:github-api"]
+  consumedBy: ["component:developer-portal"]
+
+---
+# Weather Data MCP - Used by data platform
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: weather-data-mcp
+  description: "Weather data integration for analytics and forecasting"
+  tags:
+    - weather
+    - data-integration
+    - analytics
+spec:
+  transport: http
+  runtime: python
+  type: data-connector
+  lifecycle: production
+  owner: data-team                       # Owned by data team
+  system: data-platform                  # Part of data platform
+  
+  capabilities:
+    tools:
+      - name: "fetch_current_weather"
+        description: "Get current weather conditions for multiple locations"
+      - name: "fetch_forecast"
+        description: "Get detailed weather forecasts up to 14 days"
+      - name: "fetch_historical_data"
+        description: "Retrieve historical weather data for analysis"
+    resources:
+      - name: "weather_stations"
+        description: "Global network of weather monitoring stations"
+      - name: "forecast_models"
+        description: "Access to various weather prediction models"
+  
+  configuration:
+    url: "https://weather-api.company.com/v2"
+    timeout: 45000
+    env:
+      - name: "WEATHER_API_KEY"
+        valueFrom: "secret"
+      - name: "RATE_LIMIT_PER_HOUR"
+        value: "1000"
+  
+  authentication:
+    type: api-key
+    config:
+      header: "X-API-Key"
+  
+  # Depends on weather API, consumed by data pipeline
+  dependsOn: ["api:weather-api"]
+  consumedBy: ["component:data-pipeline-orchestrator"]
+
+---
+# Database Analytics MCP - Connects data platform with postgres
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: database-analytics-mcp
+  description: "Advanced database analytics and query optimization"
+  tags:
+    - database
+    - analytics
+    - performance
+spec:
+  transport: stdio
+  runtime: python
+  type: data-connector
+  lifecycle: production
+  owner: data-team
+  system: data-platform
+  
+  capabilities:
+    tools:
+      - name: "execute_analytics_query"
+        description: "Execute optimized analytics queries with caching"
+      - name: "analyze_query_performance"
+        description: "Analyze query execution plans and performance"
+      - name: "generate_reports"
+        description: "Generate automated analytics reports"
+    resources:
+      - name: "query_templates"
+        description: "Library of pre-built analytics query templates"
+      - name: "performance_metrics"
+        description: "Database performance monitoring and alerting"
+  
+  configuration:
+    command: "python"
+    args: ["-m", "database_analytics_mcp"]
+    timeout: 180000                      # 3 minutes for complex analytics
+    env:
+      - name: "DB_CONNECTION_STRING"
+        valueFrom: "secret"
+      - name: "CACHE_TTL_SECONDS"
+        value: "3600"
+      - name: "MAX_QUERY_ROWS"
+        value: "100000"
+  
+  # Depends on postgres cluster, consumed by data pipeline
+  dependsOn: ["resource:postgres-cluster"]
+  consumedBy: ["component:data-pipeline-orchestrator"]
+
+---
+# ML Model Management MCP - Integrates with ML platform
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: ml-model-management-mcp
+  description: "Machine learning model lifecycle management and deployment"
+  tags:
+    - machine-learning
+    - models
+    - deployment
+    - mlops
+spec:
+  transport: sse                         # Server-sent events for real-time updates
+  runtime: python
+  type: workflow-automation
+  lifecycle: production
+  owner: ml-platform-team               # Owned by ML platform team
+  system: ml-platform                   # Part of ML platform system
+  
+  capabilities:
+    tools:
+      - name: "deploy_model"
+        description: "Deploy ML models with A/B testing and rollback support"
+      - name: "monitor_model_drift"
+        description: "Monitor model performance and data drift in production"
+      - name: "retrain_model"
+        description: "Trigger model retraining with new data"
+      - name: "scale_inference"
+        description: "Auto-scale model inference based on demand"
+    resources:
+      - name: "model_registry"
+        description: "Centralized registry of all ML models and versions"
+      - name: "training_datasets"
+        description: "Managed training datasets with versioning"
+      - name: "inference_logs"
+        description: "Model inference logs for monitoring and debugging"
+    prompts:
+      - name: "model_card_generator"
+        description: "Generate model cards with performance metrics"
+      - name: "deployment_strategy"
+        description: "Recommend optimal deployment strategies"
+  
+  configuration:
+    url: "https://ml-mcp.company.com/sse/v1"
+    timeout: 900000                      # 15 minutes for training operations
+    env:
+      - name: "MLFLOW_TRACKING_URI"
+        value: "https://mlflow.company.com"
+      - name: "MODEL_REGISTRY_URI"
+        value: "https://models.company.com"
+      - name: "KUBECONFIG_PATH"
+        valueFrom: "secret"
+      - name: "GPU_ALLOCATION_LIMIT"
+        value: "8"
+  
+  authentication:
+    type: oauth2
+    provider: "company-sso"
+    config:
+      scopes: ["ml-platform", "model-deploy"]
+  
+  # Depends on GPU cluster, consumed by ML serving component
+  dependsOn: ["resource:gpu-cluster"]
+  consumedBy: ["component:ml-model-serving"]
