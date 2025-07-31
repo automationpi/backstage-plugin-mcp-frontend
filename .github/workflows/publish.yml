@@ -41,12 +41,50 @@ jobs:
     - name: Run lint
       run: yarn lint
     
-    - name: Auto-increment version
+    - name: Smart version increment
       run: |
         if [[ "${{ github.event_name }}" == "push" ]]; then
-          # Auto-increment patch version for pushes to main
-          npm version patch --no-git-tag-version
-          echo "Updated version to: $(npm pkg get version)"
+          # Get package name and current local version
+          PACKAGE_NAME=$(npm pkg get name | tr -d '"')
+          LOCAL_VERSION=$(npm pkg get version | tr -d '"')
+          
+          # Get latest published version from NPM (handle case when package doesn't exist)
+          PUBLISHED_VERSION=$(npm view "$PACKAGE_NAME" version 2>/dev/null || echo "0.0.0")
+          
+          echo "Package: $PACKAGE_NAME"
+          echo "Local version: $LOCAL_VERSION"
+          echo "Published version: $PUBLISHED_VERSION"
+          
+          # Function to compare versions and increment
+          increment_version() {
+            local version=$1
+            local major minor patch
+            IFS='.' read -r major minor patch <<< "$version"
+            patch=$((patch + 1))
+            echo "$major.$minor.$patch"
+          }
+          
+          # Determine next version to publish
+          if [ "$PUBLISHED_VERSION" = "0.0.0" ]; then
+            # Package doesn't exist, use local version
+            NEW_VERSION="$LOCAL_VERSION"
+          else
+            # Compare versions and increment the higher one
+            if [ "$LOCAL_VERSION" = "$PUBLISHED_VERSION" ]; then
+              # Same version, increment patch
+              NEW_VERSION=$(increment_version "$PUBLISHED_VERSION")
+            elif dpkg --compare-versions "$LOCAL_VERSION" gt "$PUBLISHED_VERSION"; then
+              # Local is higher, use local
+              NEW_VERSION="$LOCAL_VERSION"
+            else
+              # Published is higher, increment published
+              NEW_VERSION=$(increment_version "$PUBLISHED_VERSION")
+            fi
+          fi
+          
+          # Update package.json with new version
+          npm version "$NEW_VERSION" --no-git-tag-version
+          echo "Updated version to: $NEW_VERSION"
         fi
     
     - name: Show package info before publish
