@@ -1,0 +1,46 @@
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: github-mcp
+  title: GitHub MCP Server
+  description: GitHub integration for code repository operations and automation
+  annotations:
+    backstage.io/source-location: url:https://github.com/modelcontextprotocol/servers/tree/main/src/github
+    backstage.io/links: |
+      - url: https://docs.github.com/en/rest
+        title: GitHub API Documentation
+        icon: docs
+spec:
+  type: api-integration
+  lifecycle: experimental
+  owner: platform-team
+  system: ai-platform
+  runtime: node
+  transport: stdio
+  configuration:
+    command: npx
+    args: ["@modelcontextprotocol/server-github"]
+    env:
+      - name: "GITHUB_PERSONAL_ACCESS_TOKEN"
+        value: "${GITHUB_TOKEN}"
+  capabilities:
+    tools:
+      - name: create_repository
+        description: Create a new GitHub repository
+      - name: create_or_update_file
+        description: Create or update a file in a repository
+      - name: search_repositories
+        description: Search for repositories on GitHub
+      - name: create_issue
+        description: Create an issue in a repository
+      - name: create_pull_request
+        description: Create a pull request
+      - name: get_file_contents
+        description: Get contents of a file from a repository
+    resources:
+      - name: repository
+        description: Repository information and metadata
+      - name: issues
+        description: Repository issues and their details
+      - name: pull_requests
+        description: Pull requests and their status

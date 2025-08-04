@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: john-smith
+  title: John Smith
+  description: Senior Platform Engineer specializing in AI infrastructure
+spec:
+  profile:
+    displayName: John Smith
+    email: john.smith@company.com
+  memberOf: [platform-team]

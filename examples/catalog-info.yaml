@@ -1,0 +1,29 @@
+apiVersion: backstage.io/v1alpha1
+kind: Location
+metadata:
+  name: mcp-examples
+  title: MCP Examples Organization
+  description: Complete organizational structure with MCP servers
+spec:
+  targets:
+    # Groups (Teams)
+    - ./entities/groups/platform-team.yaml
+    - ./entities/groups/data-team.yaml
+    
+    # Users
+    - ./entities/users/john-smith.yaml
+    - ./entities/users/jane-doe.yaml
+    
+    # Systems
+    - ./entities/systems/ai-platform.yaml
+    - ./entities/systems/data-pipeline.yaml
+    
+    # Components
+    - ./entities/components/ai-assistant-api.yaml
+    - ./entities/components/data-processor.yaml
+    
+    # MCP Servers
+    - ./entities/mcp/filesystem-mcp.yaml
+    - ./entities/mcp/sqlite-mcp.yaml
+    - ./entities/mcp/github-mcp.yaml
+    - ./entities/mcp/postgres-mcp.yaml

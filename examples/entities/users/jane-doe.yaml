@@ -1,0 +1,11 @@
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: jane-doe
+  title: Jane Doe
+  description: Data Engineer focused on analytics and machine learning pipelines
+spec:
+  profile:
+    displayName: Jane Doe
+    email: jane.doe@company.com
+  memberOf: [data-team]

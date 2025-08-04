@@ -1,0 +1,18 @@
+# Global ownership
+* @mexl
+
+# Core plugin files
+/src/ @mexl
+/package.json @mexl
+/tsconfig.json @mexl
+
+# Documentation
+/README.md @mexl
+/CHANGELOG.md @mexl
+/docs/ @mexl
+
+# GitHub workflows and configuration
+/.github/ @mexl
+
+# Examples and templates
+/examples/ @mexl

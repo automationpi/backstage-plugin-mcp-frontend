@@ -1,0 +1,202 @@
+# Medium Complexity MCP Server Examples
+# These examples show more advanced MCP configurations with authentication and multiple capabilities
+
+---
+# Advanced GitHub Integration MCP (HTTP with OAuth)
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: github-integration-mcp
+  description: "Advanced GitHub integration with repository management and issue tracking"
+  tags:
+    - github
+    - version-control
+    - project-management
+spec:
+  transport: http
+  runtime: node
+  type: api-integration
+  lifecycle: production
+  owner: platform-team
+  system: developer-tools                # Part of larger system
+  
+  # Enhanced capabilities with descriptions for better UX
+  capabilities:
+    tools:
+      - name: "create_repository"
+        description: "Create new GitHub repositories with templates"
+      - name: "manage_issues"
+        description: "Create, update, and close GitHub issues"
+      - name: "sync_branches"
+        description: "Synchronize branches across repositories"
+    resources:
+      - name: "repository_metadata"
+        description: "Access to repository information and statistics"
+      - name: "issue_templates"
+        description: "Available issue and PR templates"
+    prompts:
+      - name: "commit_message_generator"
+        description: "Generate conventional commit messages"
+  
+  # HTTP configuration with timeout and retries
+  configuration:
+    url: "https://github-mcp.company.com/api/v1"
+    timeout: 60000                       # Longer timeout for API calls
+    retries: 3                           # Retry failed requests
+    env:
+      - name: "GITHUB_APP_ID"
+        value: "123456"
+      - name: "GITHUB_PRIVATE_KEY"       # Sensitive data from secrets
+        valueFrom: "secret"
+  
+  # OAuth2 authentication
+  authentication:
+    type: oauth2
+    provider: "github"
+    config:
+      scopes: ["repo", "issues", "pull_requests"]
+      audience: "https://api.github.com"
+  
+  # Dependencies and relationships
+  dependsOn: ["api:github-api"]          # Depends on GitHub API
+  consumedBy: ["component:developer-portal", "component:ci-cd-pipeline"]
+
+---
+# Multi-Database Analytics MCP (stdio with complex config)
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: analytics-database-mcp
+  description: "Multi-database analytics server supporting PostgreSQL, MySQL, and BigQuery"
+  tags:
+    - analytics
+    - database
+    - business-intelligence
+spec:
+  transport: stdio
+  runtime: python
+  type: data-connector
+  lifecycle: production
+  owner: data-platform-team
+  system: analytics-platform
+  
+  capabilities:
+    tools:
+      - name: "execute_cross_db_query"
+        description: "Execute queries across multiple database types"
+      - name: "generate_report"
+        description: "Generate analytics reports with visualizations"
+      - name: "cache_query_results"
+        description: "Cache frequently used query results"
+    resources:
+      - name: "database_schemas"
+        description: "Schema information for all connected databases"
+      - name: "query_history"
+        description: "Historical query execution logs"
+      - name: "performance_metrics"
+        description: "Database performance and usage metrics"
+    prompts:
+      - name: "sql_optimizer"
+        description: "Suggest query optimizations"
+      - name: "report_template"
+        description: "Generate report templates"
+  
+  # Complex environment configuration
+  configuration:
+    command: "python"
+    args: ["-m", "analytics_mcp_server", "--config", "/etc/mcp/analytics.json"]
+    timeout: 120000                      # 2 minutes for complex queries
+    env:
+      # PostgreSQL connection
+      - name: "POSTGRES_HOST"
+        value: "postgres.company.com"
+      - name: "POSTGRES_DB"
+        value: "analytics"
+      - name: "POSTGRES_PASSWORD"
+        valueFrom: "secret"
+      # MySQL connection  
+      - name: "MYSQL_HOST"
+        value: "mysql.company.com"
+      - name: "MYSQL_PASSWORD"
+        valueFrom: "secret"
+      # BigQuery authentication
+      - name: "GOOGLE_APPLICATION_CREDENTIALS"
+        valueFrom: "secret"
+      - name: "BIGQUERY_PROJECT_ID"
+        value: "company-analytics"
+  
+  # Multiple API dependencies
+  dependsOn: 
+    - "resource:postgres-cluster"
+    - "resource:mysql-cluster" 
+    - "api:bigquery-api"
+  consumedBy: ["component:business-dashboard", "component:data-science-platform"]
+
+---
+# Advanced Slack Integration MCP (WebSocket with events)
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: slack-events-mcp
+  description: "Real-time Slack integration with event handling and bot interactions"
+  tags:
+    - slack
+    - communications
+    - real-time
+    - events
+spec:
+  transport: websocket                   # Real-time bidirectional communication
+  runtime: node
+  type: workflow-automation
+  lifecycle: production
+  owner: communications-team
+  system: collaboration-platform
+  
+  capabilities:
+    tools:
+      - name: "send_message"
+        description: "Send messages to Slack channels or users"
+      - name: "create_channel"
+        description: "Create and configure new Slack channels"
+      - name: "manage_workflows"
+        description: "Create and manage Slack workflow automations"
+      - name: "handle_events"
+        description: "Process incoming Slack events and reactions"
+    resources:
+      - name: "channel_metadata"
+        description: "Information about channels, members, and permissions"
+      - name: "message_history"
+        description: "Access to message history and search"
+      - name: "user_profiles"
+        description: "User profile information and status"
+    prompts:
+      - name: "announcement_template"
+        description: "Generate company announcement templates"
+      - name: "meeting_summary"
+        description: "Create meeting summary from Slack conversations"
+  
+  # WebSocket configuration
+  configuration:
+    url: "wss://slack-mcp.company.com/ws"
+    timeout: 300000                      # 5 minute timeout for long-running operations
+    reconnect: true                      # Auto-reconnect on connection loss
+    heartbeat: 30000                     # 30 second heartbeat
+    env:
+      - name: "SLACK_BOT_TOKEN"
+        valueFrom: "secret"
+      - name: "SLACK_SIGNING_SECRET"
+        valueFrom: "secret"
+      - name: "SLACK_APP_TOKEN"
+        valueFrom: "secret"
+  
+  # Bot token authentication
+  authentication:
+    type: bearer
+    config:
+      tokenField: "SLACK_BOT_TOKEN"
+  
+  dependsOn: ["api:slack-api"]
+  consumedBy: 
+    - "component:incident-response"
+    - "component:hr-portal"
+    - "component:project-notifications"

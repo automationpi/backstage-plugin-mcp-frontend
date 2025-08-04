@@ -1,0 +1,45 @@
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: postgres-mcp
+  title: PostgreSQL MCP Server
+  description: Enterprise database operations for production workloads and analytics
+  annotations:
+    backstage.io/source-location: url:https://github.com/modelcontextprotocol/servers/tree/main/src/postgres
+spec:
+  type: data-connector
+  lifecycle: production
+  owner: data-team
+  system: data-pipeline
+  dependsOn:
+    - component:default/data-processor
+  runtime: node
+  transport: stdio
+  configuration:
+    command: npx
+    args: ["@modelcontextprotocol/server-postgres"]
+    env:
+      - name: "POSTGRES_CONNECTION_STRING"
+        value: "postgresql://user:password@localhost:5432/production_db"
+  capabilities:
+    tools:
+      - name: postgres_select
+        description: Execute SELECT queries with safety checks
+      - name: postgres_insert
+        description: Insert data into tables
+      - name: postgres_update
+        description: Update existing records
+      - name: postgres_schema
+        description: Get database schema information
+    resources:
+      - name: tables
+        description: Available database tables
+      - name: views
+        description: Database views and their definitions
+      - name: functions
+        description: Stored procedures and functions
+    prompts:
+      - name: query_optimizer
+        description: Optimize SQL queries for better performance
+      - name: data_analysis
+        description: Generate analytical queries for business insights

@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: ai-platform
+  title: AI Development Platform
+  description: Comprehensive platform for AI development and deployment with MCP integration
+spec:
+  owner: platform-team
+  domain: platform

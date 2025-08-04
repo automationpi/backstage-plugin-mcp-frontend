@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: data-team
+  title: Data Engineering Team
+  description: Team responsible for data infrastructure and analytics
+spec:
+  type: team
+  profile:
+    displayName: Data Engineering
+    email: data@company.com
+  children: []

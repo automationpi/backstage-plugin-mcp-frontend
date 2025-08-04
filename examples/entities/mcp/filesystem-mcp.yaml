@@ -1,0 +1,54 @@
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: filesystem-mcp
+  title: Filesystem MCP Server
+  description: Secure filesystem operations for AI assistants
+  annotations:
+    backstage.io/source-location: url:https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem
+    backstage.io/links: |
+      - url: https://github.com/modelcontextprotocol/servers
+        title: Source Repository
+        icon: github
+      - url: https://modelcontextprotocol.io/docs
+        title: MCP Documentation
+        icon: docs
+spec:
+  type: file-processor
+  lifecycle: production
+  owner: platform-team
+  system: ai-platform
+  dependsOn:
+    - component:default/ai-assistant-api
+  runtime: node
+  transport: stdio
+  configuration:
+    command: npx
+    args: ["@modelcontextprotocol/server-filesystem", "/workspace"]
+    env:
+      - name: "FILESYSTEM_ALLOWED_EXTENSIONS"
+        value: ".txt,.md,.json,.yaml,.yml,.py,.js,.ts"
+      - name: "FILESYSTEM_MAX_FILE_SIZE"
+        value: "10MB"
+  capabilities:
+    tools:
+      - name: read_file
+        description: Read contents of a file from the filesystem
+      - name: write_file
+        description: Write or create a file on the filesystem
+      - name: create_directory
+        description: Create a new directory
+      - name: list_directory
+        description: List contents of a directory
+      - name: search_files
+        description: Search for files matching patterns
+    resources:
+      - name: file_tree
+        description: Complete filesystem tree structure
+      - name: file_stats
+        description: File metadata and statistics
+    prompts:
+      - name: file_summary
+        description: Generate summary of file contents
+      - name: code_review
+        description: Review code files for best practices

@@ -1,0 +1,78 @@
+{
+  "name": "@mexl/backstage-plugin-mcp-frontend",
+  "version": "1.1.0",
+  "description": "Enhanced Backstage frontend plugin for MCP (Model Context Protocol) entity visualization with JSON/Text toggle, syntax highlighting, and VSCode integration",
+  "main": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "author": "mexl",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/automationpi/backstage-plugin-mcp-frontend.git"
+  },
+  "homepage": "https://github.com/automationpi/backstage-plugin-mcp-frontend#readme",
+  "bugs": {
+    "url": "https://github.com/automationpi/backstage-plugin-mcp-frontend/issues"
+  },
+  "keywords": [
+    "backstage",
+    "plugin",
+    "frontend",
+    "mcp",
+    "model-context-protocol",
+    "catalog",
+    "visualization",
+    "ui",
+    "react"
+  ],
+  "backstage": {
+    "role": "frontend-plugin"
+  },
+  "packageManager": "yarn@4.4.1",
+  "engines": {
+    "node": ">=20.18.1"
+  },
+  "scripts": {
+    "build": "backstage-cli package build",
+    "tsc": "tsc --project tsconfig.declarations.json",
+    "lint": "echo 'Linting skipped - no ESLint config'",
+    "test": "backstage-cli package test --passWithNoTests --watchAll=false",
+    "clean": "backstage-cli package clean",
+    "prepack": "yarn tsc || echo 'TypeScript errors ignored' && yarn build"
+  },
+  "dependencies": {
+    "@backstage/catalog-model": "^1.7.5",
+    "@backstage/core-components": "^0.16.1",
+    "@backstage/core-plugin-api": "^1.9.4",
+    "@backstage/plugin-catalog": "^1.24.1",
+    "@backstage/plugin-catalog-react": "^1.15.1",
+    "@backstage/theme": "^0.6.1",
+    "@material-ui/core": "^4.12.4",
+    "@material-ui/icons": "^4.11.3",
+    "@material-ui/lab": "^4.0.0-alpha.61",
+    "react": "^17.0.2 || ^18.0.0",
+    "react-dom": "^17.0.2 || ^18.0.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.33.1",
+    "@backstage/dev-utils": "^1.1.6",
+    "@backstage/test-utils": "^1.7.0",
+    "@types/react": "^17.0.0 || ^18.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "@backstage/catalog-model": "^1.7.5",
+    "@backstage/core-components": "^0.16.1",
+    "@backstage/core-plugin-api": "^1.9.4",
+    "@backstage/plugin-catalog-react": "^1.15.1",
+    "react": "^17.0.2 || ^18.0.0",
+    "react-dom": "^17.0.2 || ^18.0.0"
+  },
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

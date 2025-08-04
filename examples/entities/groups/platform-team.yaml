@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: platform-team
+  title: Platform Engineering Team
+  description: Team responsible for platform infrastructure and AI tooling
+spec:
+  type: team
+  profile:
+    displayName: Platform Engineering
+    email: platform@company.com
+  children: []

@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: data-pipeline
+  title: Data Processing Pipeline
+  description: System for processing and analyzing large datasets with MCP-enabled tools
+spec:
+  owner: data-team
+  domain: data

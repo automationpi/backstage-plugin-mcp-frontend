@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: data-processor
+  title: Data Processing Service
+  description: Service for real-time data processing and transformation
+  annotations:
+    backstage.io/links: |
+      - url: https://grafana.company.com/d/data-processor
+        title: Monitoring Dashboard
+        icon: dashboard
+spec:
+  type: service
+  lifecycle: production
+  owner: data-team
+  system: data-pipeline

@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: ai-assistant-api
+  title: AI Assistant API
+  description: REST API for AI assistant functionality with MCP server integration
+  annotations:
+    backstage.io/links: |
+      - url: https://api.company.com/docs
+        title: API Documentation
+        icon: docs
+spec:
+  type: service
+  lifecycle: production
+  owner: platform-team
+  system: ai-platform

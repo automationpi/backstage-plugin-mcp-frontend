@@ -1,0 +1,39 @@
+apiVersion: backstage.io/v1alpha1
+kind: MCP
+metadata:
+  name: sqlite-mcp
+  title: SQLite MCP Server
+  description: Database operations for AI data analysis and exploration
+  annotations:
+    backstage.io/source-location: url:https://github.com/modelcontextprotocol/servers/tree/main/src/sqlite
+spec:
+  type: data-connector
+  lifecycle: production
+  owner: data-team
+  system: data-pipeline
+  dependsOn:
+    - component:default/data-processor
+  runtime: node
+  transport: stdio
+  configuration:
+    command: npx
+    args: ["@modelcontextprotocol/server-sqlite", "/data/analytics.db"]
+  capabilities:
+    tools:
+      - name: read_query
+        description: Execute SELECT queries on the database
+      - name: write_query
+        description: Execute INSERT, UPDATE, DELETE queries
+      - name: create_table
+        description: Create new database tables
+      - name: list_tables
+        description: List all tables in the database
+      - name: describe_table
+        description: Get schema information for a table
+    resources:
+      - name: schema
+        description: Database schema information
+      - name: tables
+        description: List of available tables
+      - name: table_data
+        description: Sample data from tables
