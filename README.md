@@ -1,7 +1,21 @@
-A Backstage frontend plugin that visualizes Model Context Protocol (MCP) servers with rich UI components. This plugin allows backstage to centrally manage, discover, and collaborate around MCP entities directly from your Backstage catalog.
-
 [![NPM Version](https://img.shields.io/npm/v/@mexl/backstage-plugin-mcp-frontend)](https://www.npmjs.com/package/@mexl/backstage-plugin-mcp-frontend)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
+<div align="center">
+<table border="0" style="border: none;">
+<tr border="0" style="border: none;">
+<td align="center" width="50%" border="0" style="border: none;">
+<img width="350" height="350" alt="image" src="https://github.com/user-attachments/assets/848445d0-26fb-45a6-8815-70b4bbeada62" />
+</td>
+<td width="50%">
+<h3>MCP Frontend Plugin</h3>
+A Backstage frontend plugin that visualizes Model Context Protocol (MCP) servers with rich UI components. This plugin allows backstage to centrally manage, discover, and collaborate around MCP entities directly from your Backstage catalog.
+</td>
+</tr>
+</table>
+</div>
+
+
 
 ## Prerequisites
 
